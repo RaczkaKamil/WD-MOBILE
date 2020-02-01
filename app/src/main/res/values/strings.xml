@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WirtualnyDziekanat</string>
+    <string name="app_name2">WirtualnyDziekanat2</string>
+    <string name="title_home">Aktualności</string>
+    <string name="title_Oceny">Oceny</string>
+    <string name="title_Finanse">Finanse</string>
+</resources>
