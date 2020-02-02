@@ -1,4 +1,4 @@
-package com.wsiz.wirtualny.ui.oceny;
+package com.wsiz.wirtualny.ui;
 
 public class JsonNews {
 long ogloszenieid;

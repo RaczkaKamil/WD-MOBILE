@@ -2,7 +2,6 @@ package com.wsiz.wirtualny.ui.home;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import com.wsiz.wirtualny.R;
-
-import java.util.ArrayList;
 
 public class CustomAdapter extends ArrayAdapter<String> {
 
@@ -32,7 +29,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
     private class ViewHolder {
         TextView tiltedOnList;
-        TextView adressonList;
+        TextView dataOnList;
         TextView standardOnList;
         ImageView imageonList;
     }
@@ -52,9 +49,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.list_layout, parent, false);
             viewHolder.tiltedOnList = (TextView) convertView.findViewById(R.id.tiltedOnList);
-            viewHolder.adressonList = (TextView) convertView.findViewById(R.id.adressonList);
-            viewHolder.standardOnList = (TextView) convertView.findViewById(R.id.standardOnList);
-
+            viewHolder.dataOnList = (TextView) convertView.findViewById(R.id.dataOnList);
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -63,8 +58,19 @@ public class CustomAdapter extends ArrayAdapter<String> {
             result=convertView;
         }
 
+
+
+        try{
+            String[] split = dataModel.split("\n");
+            viewHolder.tiltedOnList.setText(split[0]);
+            viewHolder.dataOnList.setText(split[1]);
+        }catch (ArrayIndexOutOfBoundsException e){
+            e.fillInStackTrace();
+        }
+
         return convertView;
     }
+
 
 
 }

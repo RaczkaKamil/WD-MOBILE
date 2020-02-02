@@ -7,39 +7,33 @@
     android:background="@android:drawable/dialog_holo_light_frame">
 
     <TextView
-        android:id="@+id/standardOnList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:text="Szanowni Państwo,  w związku ze zbliżającym się końcem semestru zimowego w najbliższy weekend ..."
-        app:layout_constraintEnd_toEndOf="@+id/tiltedOnList"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tiltedOnList"
-        app:layout_constraintTop_toBottomOf="@+id/tiltedOnList" />
-
-    <TextView
-        android:id="@+id/adressonList"
+        android:id="@+id/dataOnList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="data: 2020-01-29 15:39:16"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@+id/tiltedOnList"
-        app:layout_constraintTop_toBottomOf="@+id/standardOnList" />
+        app:layout_constraintTop_toBottomOf="@+id/tiltedOnList" />
 
     <TextView
         android:id="@+id/tiltedOnList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/adressonList"
-        android:layout_alignStart="@+id/adressonList"
-        android:layout_alignEnd="@+id/adressonList"
+        android:layout_below="@+id/dataOnList"
+        android:layout_alignStart="@+id/dataOnList"
+        android:layout_alignEnd="@+id/dataOnList"
         android:text="Wybór przedmiotów na semestr letni 2019/2020"
+        android:shadowColor="@color/light_font"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:textColor="@color/text_shadow"
         android:textSize="20sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
