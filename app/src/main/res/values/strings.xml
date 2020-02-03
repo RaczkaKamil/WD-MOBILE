@@ -4,5 +4,7 @@
     <string name="title_home">Aktualności</string>
     <string name="title_Oceny">Oceny</string>
     <string name="title_Finanse">Finanse</string>
+    <string name="title_Kalendarz">Kalendarz</string>
+
     <string name="title_activity_selected">SelectedActivity</string>
 </resources>

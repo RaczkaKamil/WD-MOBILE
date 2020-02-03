@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView tf_password;
     TextView tf_info;
     Button bt_login;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         tf_login = findViewById(R.id.tf_login);
         tf_password = findViewById(R.id.tf_password);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         tf_info = findViewById(R.id.tf_info);
         tf_info.setAlpha(0f);
         bt_login = findViewById(R.id.bt_login);
@@ -50,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 login();
-
+                progressBar.setVisibility(View.VISIBLE);
 
          });
 
@@ -63,20 +67,27 @@ public class LoginActivity extends AppCompatActivity {
         sendPost(login,zaszyfrowaneHasło);
     }
 
-    private void Auth(boolean succes){
+    private void Auth(boolean succes,boolean connectFalsse){
 
         this.runOnUiThread(new Runnable() {
             public void run() {
                 tf_info.setAlpha(0f);
-        if(succes){
+        if(succes && !connectFalsse){
             tf_info.setText("Zalogowano!");
             tf_info.setTextColor(Color.GREEN);
             tf_info.animate().alpha(1f).setDuration(500);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            progressBar.setVisibility(View.GONE);
 
-        }else {
+        }else if(!succes&&!connectFalsse) {
+            progressBar.setVisibility(View.GONE);
             tf_info.setText("Błędny Login lub Hasło!");
+            tf_info.setTextColor(Color.RED);
+            tf_info.animate().alpha(1f).setDuration(500);
+        }else if(!succes&& connectFalsse){
+            progressBar.setVisibility(View.GONE);
+            tf_info.setText("Błąd serwera!");
             tf_info.setTextColor(Color.RED);
             tf_info.animate().alpha(1f).setDuration(500);
         }
@@ -137,7 +148,9 @@ private  void saveAccount(String login, String password){
                     conn.setDoInput(true);
 
 
-                    InputStream stream = conn.getInputStream();
+                        InputStream stream = conn.getInputStream();
+
+
                     BufferedReader reader = null;
                     reader = new BufferedReader(new InputStreamReader(stream));
 
@@ -151,15 +164,16 @@ private  void saveAccount(String login, String password){
                         if(line.length() == 36){
                             saveToken(line);
                             saveAccount(login, haslo);
-                            Auth(true);
+                            Auth(true,false);
                         }else{
 
-                           Auth(false);
+                           Auth(false,false);
                         }
                     }
 
                     conn.disconnect();
                 } catch (Exception e) {
+                    Auth(false,true);
                     e.printStackTrace();
                 }
             }

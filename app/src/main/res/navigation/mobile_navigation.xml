@@ -9,17 +9,35 @@
         android:id="@+id/navigation_home"
         android:name="com.wsiz.wirtualny.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_aktualnosci" />
+        tools:layout="@layout/fragment_aktualnosci" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_oceny"
+            app:destination="@id/navigation_oceny" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_oceny"
         android:name="com.wsiz.wirtualny.ui.oceny.OcenyFragment"
         android:label="@string/title_Oceny"
-        tools:layout="@layout/fragment_oceny" />
+        tools:layout="@layout/fragment_oceny" >
+        <action
+            android:id="@+id/action_navigation_oceny_to_navigation_finanse"
+            app:destination="@id/navigation_finanse" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_finanse"
         android:name="com.wsiz.wirtualny.ui.finanse.FinanseFragment"
         android:label="@string/title_Finanse"
-        tools:layout="@layout/fragment_finanse" />
+        tools:layout="@layout/fragment_finanse" >
+        <action
+            android:id="@+id/action_navigation_finanse_to_navigation_kalendarz"
+            app:destination="@id/navigation_kalendarz" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_kalendarz"
+        android:name="com.wsiz.wirtualny.ui.kalendarz.KalendarzFragment"
+        android:label="@string/title_Kalendarz"
+        tools:layout="@layout/fragment_kalendarz" />
 </navigation>

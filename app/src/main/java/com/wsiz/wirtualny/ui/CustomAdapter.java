@@ -1,4 +1,4 @@
-package com.wsiz.wirtualny.ui.home;
+package com.wsiz.wirtualny.ui;
 
 
 import android.content.Context;
@@ -61,7 +61,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
 
         try{
-            String[] split = dataModel.split("\n");
+            String[] split = dataModel.split("~~");
             viewHolder.tiltedOnList.setText(split[0]);
             viewHolder.dataOnList.setText(split[1]);
         }catch (ArrayIndexOutOfBoundsException e){
