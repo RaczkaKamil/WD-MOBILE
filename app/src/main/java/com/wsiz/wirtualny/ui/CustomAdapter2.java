@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -14,13 +13,13 @@ import java.util.ArrayList;
 
 import com.wsiz.wirtualny.R;
 
-public class CustomAdapter extends ArrayAdapter<String> {
+public class CustomAdapter2 extends ArrayAdapter<String> {
 
     private ArrayList<String> dataSet;
     Context mContext;
 
-    public CustomAdapter(ArrayList<String> data, Context context) {
-        super(context, R.layout.list_aktualnosci, data);
+    public CustomAdapter2(ArrayList<String> data, Context context) {
+        super(context, R.layout.list_oceny, data);
         this.dataSet = data;
         this.mContext = context;
     }
@@ -28,10 +27,12 @@ public class CustomAdapter extends ArrayAdapter<String> {
     private int lastPosition = -1;
 
     private class ViewHolder {
-        TextView tiltedOnList;
-        TextView dataOnList;
-        TextView standardOnList;
-        ImageView imageonList;
+        TextView przedmiot;
+        TextView t1;
+        TextView t2;
+        TextView t3;
+        TextView aktywnosc;
+
     }
 
     @Override
@@ -47,9 +48,13 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.list_aktualnosci, parent, false);
-            viewHolder.tiltedOnList = (TextView) convertView.findViewById(R.id.tiltedOnList);
-            viewHolder.dataOnList = (TextView) convertView.findViewById(R.id.dataOnList);
+            convertView = inflater.inflate(R.layout.list_oceny, parent, false);
+
+            viewHolder.przedmiot = (TextView) convertView.findViewById(R.id.tf_przedmiot);
+            viewHolder.t1 = (TextView) convertView.findViewById(R.id.tf_t1);
+            viewHolder.t2 = (TextView) convertView.findViewById(R.id.tf_t2);
+            viewHolder.t3 = (TextView) convertView.findViewById(R.id.tf_t3);
+            viewHolder.aktywnosc = (TextView) convertView.findViewById(R.id.tf_aktywnosc);
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -62,8 +67,11 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
         try{
             String[] split = dataModel.split("~~");
-            viewHolder.tiltedOnList.setText(split[0]);
-            viewHolder.dataOnList.setText(split[1]);
+            viewHolder.przedmiot.setText(split[0]);
+            viewHolder.t1.setText(split[1]);
+            viewHolder.t2.setText(split[2]);
+            viewHolder.t3.setText(split[3]);
+            viewHolder.aktywnosc.setText(split[4]);
         }catch (ArrayIndexOutOfBoundsException e){
             e.fillInStackTrace();
         }

@@ -1,21 +1,29 @@
 package com.wsiz.wirtualny.ui.oceny;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.wsiz.wirtualny.R;
+import com.wsiz.wirtualny.ui.CustomAdapter;
+import com.wsiz.wirtualny.ui.CustomAdapter2;
 import com.wsiz.wirtualny.ui.JsonNews;
 import com.wsiz.wirtualny.ui.TokenPocket;
 
@@ -23,22 +31,81 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class OcenyFragment extends Fragment {
 String token;
+    TabLayout tabLayout;
+    TabItem sem1;
+    TabItem sem2;
+    TabItem sem3;
+    TabItem sem4;
+    TabItem sem5;
+    TabItem sem6;
+    TabItem sem7;
+    ArrayList<String> MessageslistOfString = new ArrayList<String>();
+    CustomAdapter2 customAdapterr;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_oceny, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        textView.setText("Oceny: ");
+        tabLayout = root.findViewById(R.id.tabLayout);
+        sem1 = root.findViewById(R.id.sem1);
+        sem2= root.findViewById(R.id.sem2);
+        sem3 = root.findViewById(R.id.sem3);
+        sem4 = root.findViewById(R.id.sem4);
+        sem5 = root.findViewById(R.id.sem5);
+        sem6 = root.findViewById(R.id.sem6);
+        sem7 = root.findViewById(R.id.sem7);
+
+
+        customAdapterr = new CustomAdapter2(MessageslistOfString, getContext());
+        final ListView online_list = root.findViewById(R.id.online_list2);
+        online_list.setAdapter(customAdapterr);
+        online_list.setClickable(false);
+
+
+        MessageslistOfString.add("Elementy architektury komputerów - w. ~~"+" ~~"+" ~~"+"3~~"+" ~~");
+        MessageslistOfString.add("Architektura systemów komputerowych - w. ~~"+"4~~"+" ~~"+" ~~"+" ~~");
+        MessageslistOfString.add("Język angielski 1 (poziom 2) - lektorat ~~"+" ~~"+"5~~"+" ~~"+" ~~");
+        MessageslistOfString.add("Podstawy programowania obiektowego- w. ~~"+"3~~"+"5~~"+" ~~"+" ~~");
+        MessageslistOfString.add("Praktyka zawodowa_3_Ipol - w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
+        MessageslistOfString.add("Praktyka- w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
+        customAdapterr.notifyDataSetChanged();
+
+
+
+        tabLayout.getTabAt(2).select();
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                System.out.println("Selected: " + tab.getPosition());
+                selectedTab(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
         TokenPocket tokenPocket = new TokenPocket();
         tokenPocket.startRead(getContext());
         token = tokenPocket.getToken();
         connectNews(token);
+
+
         return root;
     }
 
@@ -73,5 +140,30 @@ String token;
            }
        });
        thread.start();
+   }
+
+   public void removeTab(int lastId){
+       for (int i = 0; i < 6; i++) {
+           try{
+               tabLayout.removeTab(tabLayout.getTabAt(lastId));
+               System.out.println("usunieto: "+i);
+           }catch (NullPointerException e){
+               e.fillInStackTrace();
+           }
+
+       }
+
+   }
+
+   public void selectedTab(int tab){
+       System.out.println("Wybrano: " + tab);
+       MessageslistOfString.clear();
+       MessageslistOfString.add("Elementy architektury komputerów - w. ~~"+" ~~"+" ~~"+"3~~"+" ~~");
+       MessageslistOfString.add("Architektura systemów komputerowych - w. ~~"+"4~~"+" ~~"+" ~~"+" ~~");
+       MessageslistOfString.add("Język angielski 1 (poziom 2) - lektorat ~~"+" ~~"+"5~~"+" ~~"+" ~~");
+       MessageslistOfString.add("Podstawy programowania obiektowego- w. ~~"+"3~~"+"5~~"+" ~~"+" ~~");
+       MessageslistOfString.add("Praktyka zawodowa_3_Ipol - w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
+       MessageslistOfString.add("Praktyka- w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
+       customAdapterr.notifyDataSetChanged();
    }
 }

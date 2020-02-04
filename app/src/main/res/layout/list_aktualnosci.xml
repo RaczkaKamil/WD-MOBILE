@@ -19,8 +19,8 @@
 
     <TextView
         android:id="@+id/tiltedOnList"
-        android:layout_width="298dp"
-        android:layout_height="54dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/dataOnList"
         android:layout_alignStart="@+id/dataOnList"
         android:layout_alignEnd="@+id/dataOnList"

@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Wybrano element: "+ll, Toast.LENGTH_SHORT).show();
             }
         });
-        customAdapterr.notifyDataSetChanged();
+
         TokenPocket tokenPocket = new TokenPocket();
         tokenPocket.startRead(getContext());
         token = tokenPocket.getToken();
