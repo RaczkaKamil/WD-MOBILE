@@ -1,4 +1,4 @@
-package com.wsiz.wirtualny.ui;
+package com.wsiz.wirtualny.ui.Pocket;
 
 import android.content.Context;
 

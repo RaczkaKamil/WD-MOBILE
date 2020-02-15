@@ -1,38 +1,27 @@
 package com.wsiz.wirtualny.ui.oceny;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TableLayout;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.wsiz.wirtualny.R;
-import com.wsiz.wirtualny.ui.CustomAdapter;
 import com.wsiz.wirtualny.ui.CustomAdapter2;
-import com.wsiz.wirtualny.ui.JsonNews;
-import com.wsiz.wirtualny.ui.TokenPocket;
+import com.wsiz.wirtualny.ui.Pocket.TokenPocket;
+import com.wsiz.wirtualny.ui.Pocket.UserIDPocket;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -48,6 +37,7 @@ String token;
     TabItem sem7;
     ArrayList<String> MessageslistOfString = new ArrayList<String>();
     CustomAdapter2 customAdapterr;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +67,6 @@ String token;
         MessageslistOfString.add("Praktyka- w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
         customAdapterr.notifyDataSetChanged();
 
-
-
         tabLayout.getTabAt(2).select();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
 
@@ -99,22 +87,26 @@ String token;
             }
         });
 
+        UserIDPocket userIDPocket = new UserIDPocket();
+        userIDPocket.startRead(getContext());
+        int studentID=userIDPocket.getStudentid();
 
         TokenPocket tokenPocket = new TokenPocket();
         tokenPocket.startRead(getContext());
         token = tokenPocket.getToken();
-        connectNews(token);
 
+
+        connectNews(studentID,token);
 
         return root;
     }
 
-   public void connectNews(String token){
+   public void connectNews(int id,String token){
        Thread thread = new Thread(new Runnable() {
            @Override
            public void run() {
                try {
-                   URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-semestr/semestr?wdauth=" +token);
+                   URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-news/student/" +id+"/notes?wdauth="+token);
                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                    conn.setDoOutput(true);
                    conn.setDoInput(true);
@@ -131,6 +123,7 @@ String token;
                    while ((line = reader.readLine()) != null) {
                        buffer.append(line + "\n");
                        Log.d("Response: ", "> " + line);
+
                    }
 
                    conn.disconnect();

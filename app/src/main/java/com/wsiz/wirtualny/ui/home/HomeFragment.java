@@ -1,15 +1,12 @@
 package com.wsiz.wirtualny.ui.home;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,32 +16,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.wsiz.wirtualny.LoginActivity;
-import com.wsiz.wirtualny.MainActivity;
 import com.wsiz.wirtualny.R;
 import com.wsiz.wirtualny.SelectedActivity;
 import com.wsiz.wirtualny.ui.CustomAdapter;
-import com.wsiz.wirtualny.ui.JsonArray;
-import com.wsiz.wirtualny.ui.JsonObiect;
-import com.wsiz.wirtualny.ui.TokenPocket;
+import com.wsiz.wirtualny.ui.Pocket.TokenPocket;
 import com.wsiz.wirtualny.ui.JsonNews;
 
 import java.io.BufferedReader;
@@ -65,8 +50,7 @@ public class HomeFragment extends Fragment {
     CustomAdapter customAdapterr;
     JsonNews[] jsonNews;
     String token;
-    JsonObiect jsonObiects;
-    JsonArray jsonArray = new JsonArray();
+
     ConstraintLayout constraintLayout;
     ProgressBar progressBar2;
     EditText et_search;
