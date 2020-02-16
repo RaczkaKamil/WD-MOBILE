@@ -34,4 +34,14 @@
     <string name="material_calendar_today_button">Dzisiaj</string>
     <string name="material_calendar_positive_button">OK</string>
     <string name="material_calendar_negative_button">Cancel</string>
+    <string name="pdf_show_local_progress_title">progres pdf</string>
+    <string name="pdf_show_local_progress_content">content pdf</string>
+
+    <string name="pdf_show_online_dialog_title">title pdf</string>
+    <string name="pdf_show_online_dialog_question">qestion pdf</string>
+    <string name="pdf_show_online_dialog_button_no">no</string>
+    <string name="pdf_show_online_dialog_button_yes">yes</string>
+    <string name="message_please_wait">Proszę czekać...</string>
+
+
 </resources>

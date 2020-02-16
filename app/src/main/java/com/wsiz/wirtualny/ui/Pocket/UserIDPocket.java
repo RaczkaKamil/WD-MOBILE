@@ -12,6 +12,7 @@ public class UserIDPocket {
     private String data;
     private String token;
     private int studentID;
+    private int finID;
 
 
 
@@ -68,7 +69,7 @@ public class UserIDPocket {
         String dataRejestracji = data[4];
         boolean active = Boolean.getBoolean(data[5]);
         boolean star= Boolean.getBoolean(data[6]);;
-        int finid = Integer.valueOf(data[7]);
+       this.finID = Integer.valueOf(data[7]);
         String email = data[8];
         long phone = Integer.parseInt(data[9]);
         String comment = data[10];
@@ -79,6 +80,11 @@ public class UserIDPocket {
     public int getStudentid(){
         System.out.println("student id: "+String.valueOf(studentID));
         return this.studentID;
+    }
+
+    public int getFinid(){
+        System.out.println("finanse id: "+String.valueOf(finID));
+        return this.finID;
     }
 
 }

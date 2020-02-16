@@ -18,6 +18,7 @@ import com.wsiz.wirtualny.ui.JsonNews;
 import com.wsiz.wirtualny.ui.JsonUserID;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class LoginActivity extends AppCompatActivity {
 
+    boolean logining=true;
+    String dont ="";
     TextView tf_login;
     TextView tf_password;
     TextView tf_info;
@@ -44,6 +47,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        try{
+            Intent intent = getIntent();
+            dont = intent.getStringExtra("login");
+            if(dont.contains("dont")){
+                this.logining=false;
+                System.out.println("ZABLOKOWANO LOGOWANIE!");
+            }
+        }catch (NullPointerException e){
+            e.fillInStackTrace();
+        }
+
         tf_login = findViewById(R.id.tf_login);
         tf_password = findViewById(R.id.tf_password);
         progressBar = findViewById(R.id.progressBar);
@@ -59,13 +74,48 @@ public class LoginActivity extends AppCompatActivity {
 
          });
 
+            setLogin();
+
+    }
+    private void setLogin(){
+        String data;
+        for (int i = 0; i < fileList().length; i++) {
+
+
+        if(this.fileList()[i].contains("Account")&&!this.fileList()[i].contains("AccountInfo")){
+            try {
+                FileInputStream fileInputStream = null;
+                fileInputStream = this.openFileInput(this.fileList()[i]);
+                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuffer stringBuffer = new StringBuffer();
+
+
+                while ((data = bufferedReader.readLine()) != null) {
+                    stringBuffer.append(data + "\n");
+                    String splited = stringBuffer.toString();
+                    String account[]=splited.split("/");
+                    tf_login.setText(account[0]);
+                    tf_password.setText(account[1].trim());
+                    if(logining){
+                        bt_login.callOnClick();
+                    }
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        }
     }
 
     private void login(){
         String login = tf_login.getText().toString();
         String haslo = tf_password.getText().toString();
         String zaszyfrowaneHasło = md5(haslo);
-        connectLogin(login,zaszyfrowaneHasło);
+        connectLogin(login,zaszyfrowaneHasło,haslo);
     }
 
     private void Auth(boolean succes,boolean connectFalsse){
@@ -178,14 +228,14 @@ private  void saveAccount(String login, String password){
         });
 
     }
-    public void connectLogin(String login, String haslo) {
+    public void connectLogin(String login, String md5haslo,String haslo) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
 
 
-                    URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-auth/auth?album=" +login + "&pass="+haslo);
+                    URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-auth/auth?album=" +login + "&pass="+md5haslo);
 
                     HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                     conn.setDoOutput(true);

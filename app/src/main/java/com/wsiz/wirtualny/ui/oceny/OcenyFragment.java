@@ -1,18 +1,26 @@
 package com.wsiz.wirtualny.ui.oceny;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.wsiz.wirtualny.LoginActivity;
 import com.wsiz.wirtualny.R;
 import com.wsiz.wirtualny.ui.CustomAdapter2;
 import com.wsiz.wirtualny.ui.JsonLectures;
@@ -24,6 +32,7 @@ import com.wsiz.wirtualny.ui.Translator;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -39,11 +48,13 @@ public class OcenyFragment extends Fragment {
     TabItem sem5;
     TabItem sem6;
     TabItem sem7;
+    ProgressBar progressBar3;
     ArrayList<String> MessageslistOfString = new ArrayList<String>();
     CustomAdapter2 customAdapterr;
     JsonNotes[] jsonNotes;
     JsonLectures[] jsonLectures;
-
+    ArrayList<String> semestrList =  new ArrayList<String>();
+    ImageView btn_option;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,19 +69,24 @@ public class OcenyFragment extends Fragment {
         sem6 = root.findViewById(R.id.sem6);
         sem7 = root.findViewById(R.id.sem7);
 
+        progressBar3 = root.findViewById(R.id.progressBar3);
+        progressBar3.setVisibility(View.VISIBLE);
 
         customAdapterr = new CustomAdapter2(MessageslistOfString, getContext());
         final ListView online_list = root.findViewById(R.id.online_list2);
         online_list.setAdapter(customAdapterr);
         online_list.setClickable(false);
-
-
         customAdapterr.notifyDataSetChanged();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                System.out.println("Selected: " + tab.getPosition());
+                if(progressBar3.getVisibility()==View.GONE){
+                    System.out.println("Selected: " + tab.getPosition());
+                    selectedTab(tab.getPosition(),Long.valueOf(semestrList.get(tab.getPosition())));
+                }
+
             }
 
             @Override
@@ -94,7 +110,38 @@ public class OcenyFragment extends Fragment {
 
 
         connectNews(studentID,token);
+        btn_option= root.findViewById(R.id.btn_option);
 
+        btn_option.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), btn_option);
+            popup.getMenuInflater().inflate(R.menu.upper_nav_menu, popup.getMenu());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                popup.setForceShowIcon(true);
+            }
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    System.out.println("WYLOGOWANO");
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.putExtra("login","dont");
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            try {
+                Field mFieldPopup=popup.getClass().getDeclaredField("mPopup");
+                mFieldPopup.setAccessible(true);
+                MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popup);
+                mPopup.setForceShowIcon(true);
+            } catch (Exception e) {
+
+            }
+
+            popup.show();//showing popup menu
+
+        });
         return root;
     }
 
@@ -146,10 +193,12 @@ public class OcenyFragment extends Fragment {
                 for (int i = 0; i < jsonNotes.length; i++) {
                     if(semestrid==0){
                         semestrid=jsonNotes[i].getSemestrid();
+                        semestrList.add(String.valueOf(semestrid));
                     }
 
                     if(semestrid!=jsonNotes[i].getSemestrid()){
                         semestrid=jsonNotes[i].getSemestrid();
+                        semestrList.add(String.valueOf(semestrid));
                         count++;
                     }
                 }
@@ -232,6 +281,7 @@ public class OcenyFragment extends Fragment {
     public void setJsonLectures(JsonLectures[] jsonLectures,long semestr) {
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
+                MessageslistOfString.clear();
                 Translator translator = new Translator(0);
                 for (int i = 0; i < jsonNotes.length; i++) {
                     for (int j = 0; j < jsonLectures.length; j++) {
@@ -254,6 +304,7 @@ public class OcenyFragment extends Fragment {
                                 System.out.println("dodano: "+jsonLectures[j].getNazwa()+"~~"+t0+"~~"+t1+"~~"+t2+"~~"+"0.0");
                                 MessageslistOfString.add(jsonLectures[j].getNazwa()+"~~"+t0+"~~"+t1+"~~"+t2+"~~"+"0.0");
                                 customAdapterr.notifyDataSetChanged();
+                                progressBar3.setVisibility(View.GONE);
                             }
                         }
                     }

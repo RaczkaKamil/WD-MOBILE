@@ -6,23 +6,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 
 import com.wsiz.wirtualny.R;
 
-public class CustomAdapter extends ArrayAdapter<String> {
+public class CustomAdapterFinances extends ArrayAdapter<String> {
 
     private ArrayList<String> dataSet;
     Context mContext;
 
-    public CustomAdapter(ArrayList<String> data, Context context) {
-        super(context, R.layout.list_aktualnosci, data);
+    public CustomAdapterFinances(ArrayList<String> data, Context context) {
+        super(context, R.layout.list_finances, data);
         this.dataSet = data;
         this.mContext = context;
     }
@@ -30,10 +31,11 @@ public class CustomAdapter extends ArrayAdapter<String> {
     private int lastPosition = -1;
 
     private class ViewHolder {
-        TextView tiltedOnList;
-        TextView dataOnList;
-        TextView standardOnList;
-        ImageView imageonList;
+        TextView data;
+        TextView rodzaj;
+        TextView tytuł;
+        TextView kwota;
+
     }
 
     @Override
@@ -49,9 +51,11 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.list_aktualnosci, parent, false);
-            viewHolder.tiltedOnList = (TextView) convertView.findViewById(R.id.tiltedOnList);
-            viewHolder.dataOnList = (TextView) convertView.findViewById(R.id.dataOnList);
+            convertView = inflater.inflate(R.layout.list_finances, parent, false);
+            viewHolder.data = (TextView) convertView.findViewById(R.id.tf_t1);
+           // viewHolder.rodzaj = (TextView) convertView.findViewById(R.id.tf_t2);
+            viewHolder.tytuł = (TextView) convertView.findViewById(R.id.tf_t3);
+            viewHolder.kwota = (TextView) convertView.findViewById(R.id.tf_aktywnosc);
             result=convertView;
 
             convertView.setTag(viewHolder);
@@ -64,13 +68,27 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
         try{
             String[] split = dataModel.split("~~");
-            viewHolder.tiltedOnList.setText(split[0]);
+
             Date date;
             date = new Date();
-            date.setTime(Long.valueOf(split[1]));
+            date.setTime(Long.valueOf(split[0]));
             SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
             String date1 = format1.format(date);
-            viewHolder.dataOnList.setText(date1);
+
+
+            viewHolder.data.setText(date1);
+
+                //viewHolder.rodzaj.setText(split[1]);
+
+                viewHolder.tytuł.setText(split[2]);
+
+                viewHolder.kwota.setText(split[3]);
+
+
+
+
+
+
         }catch (ArrayIndexOutOfBoundsException e){
             e.fillInStackTrace();
         }

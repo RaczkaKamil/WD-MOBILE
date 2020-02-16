@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.login: {
                 Intent intent = new Intent(this, LoginActivity.class);
+                intent.putExtra("login","dont");
                 startActivity(intent);
                 return false;
             }

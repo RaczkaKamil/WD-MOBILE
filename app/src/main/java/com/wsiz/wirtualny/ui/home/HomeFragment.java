@@ -24,11 +24,13 @@ import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.wsiz.wirtualny.LoginActivity;
 import com.wsiz.wirtualny.R;
 import com.wsiz.wirtualny.SelectedActivity;
 import com.wsiz.wirtualny.ui.CustomAdapter;
+import com.wsiz.wirtualny.ui.OnSwipeTouchListener;
 import com.wsiz.wirtualny.ui.Pocket.TokenPocket;
 import com.wsiz.wirtualny.ui.JsonNews;
 
@@ -56,6 +58,8 @@ public class HomeFragment extends Fragment {
     EditText et_search;
     ImageView btn_option;
 
+    BottomNavigationView navigation;
+
     @SuppressLint("RestrictedApi")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -68,7 +72,6 @@ public class HomeFragment extends Fragment {
         progressBar2= root.findViewById(R.id.progressBar2);
         et_search= root.findViewById(R.id.et_search);
         btn_option= root.findViewById(R.id.btn_option);
-
         btn_option.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), btn_option);
             popup.getMenuInflater().inflate(R.menu.upper_nav_menu, popup.getMenu());
@@ -81,6 +84,7 @@ public class HomeFragment extends Fragment {
                 public boolean onMenuItemClick(MenuItem item) {
                     System.out.println("WYLOGOWANO");
                     Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.putExtra("login","dont");
                     startActivity(intent);
                     return true;
                 }
@@ -147,9 +151,21 @@ public class HomeFragment extends Fragment {
                 searchWord(s.toString());
             }
         });
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+        public void onSwipeRight() {
 
+//            navigation.setSelectedItemId(R.id.navigation_oceny);
+         //   navigation.callOnClick();
+            System.out.println("Swiped right");
+        }
 
+        public void onSwipeLeft() {
 
+         //   navigation.setSelectedItemId(R.id.navigation_oceny);
+          //  navigation.callOnClick();
+            System.out.println("Swiped left");
+        }
+    });
         return root;
     }
 

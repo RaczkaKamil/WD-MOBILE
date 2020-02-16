@@ -3,72 +3,115 @@ package com.wsiz.wirtualny.ui.finanse;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+import com.wsiz.wirtualny.LoginActivity;
 import com.wsiz.wirtualny.R;
+import com.wsiz.wirtualny.ui.CustomAdapter2;
+import com.wsiz.wirtualny.ui.CustomAdapterFinances;
+import com.wsiz.wirtualny.ui.JsonFinances;
+import com.wsiz.wirtualny.ui.JsonNotes;
 import com.wsiz.wirtualny.ui.Pocket.TokenPocket;
+import com.wsiz.wirtualny.ui.Pocket.UserIDPocket;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class FinanseFragment extends Fragment {
-WebView webView;
 String token;
+    ArrayList<String> MessageslistOfString = new ArrayList<String>();
+    CustomAdapterFinances customAdapterr;
+    JsonFinances[] jsonFinances;
+    ImageView btn_option;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_finanse, container, false);
-        final TextView textView = root.findViewById(R.id.text_notifications);
-        webView = root.findViewById(R.id.webView);
+        UserIDPocket userIDPocket = new UserIDPocket();
+        userIDPocket.startRead(getContext());
+        int finID=userIDPocket.getFinid();
+
+        customAdapterr = new CustomAdapterFinances(MessageslistOfString, getContext());
+        final ListView online_list = root.findViewById(R.id.finanse_list);
+        online_list.setAdapter(customAdapterr);
+        online_list.setClickable(false);
+        customAdapterr.notifyDataSetChanged();
 
 
-        textView.setText("Finanse: ");
         TokenPocket tokenPocket = new TokenPocket();
         tokenPocket.startRead(getContext());
         token = tokenPocket.getToken();
-        connectNews(token);
 
-        webView.setWebViewClient(new MyWebViewClient());
-        webView.loadUrl("https://dziekanat.wsi.edu.pl/get/wd-czesne/czesne?wdauth=" +token);
-        WebViewClient we = new WebViewClient();
-        we.onLoadResource(webView, "https://dziekanat.wsi.edu.pl/get/wd-czesne/czesne?wdauth=" +token);
-    webView.setWebViewClient(we);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String s, String s1, String s2, String s3, long l) {
-                System.out.println("DOWNLOAD:");
-                System.out.println(s);
-                System.out.println(s1);
-                System.out.println(s2);
-                System.out.println(s3);
-                System.out.println(String.valueOf(l));
+
+        connectFin(String.valueOf(finID),token);
+
+        btn_option= root.findViewById(R.id.btn_option);
+
+        btn_option.setOnClickListener(view -> {
+            PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), btn_option);
+            popup.getMenuInflater().inflate(R.menu.upper_nav_menu, popup.getMenu());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                popup.setForceShowIcon(true);
             }
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    System.out.println("WYLOGOWANO");
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.putExtra("login","dont");
+                    startActivity(intent);
+                    return true;
+                }
+            });
+
+            try {
+                Field mFieldPopup=popup.getClass().getDeclaredField("mPopup");
+                mFieldPopup.setAccessible(true);
+                MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popup);
+                mPopup.setForceShowIcon(true);
+            } catch (Exception e) {
+
+            }
+
+            popup.show();//showing popup menu
+
         });
-        // connectNews(token);
+
         return root;
     }
 
-    public void connectNews(String token){
+    public void connectFin(String finid,String token){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-czesne/czesne?wdauth=" +token);
+                    URL url = new URL("https://dziekanat.wsi.edu.pl/get/fin/txs/"+finid+"?wdauth=" +token);
                     HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                     conn.setDoOutput(true);
                     conn.setDoInput(true);
@@ -86,6 +129,10 @@ String token;
                     while ((line = reader.readLine()) != null) {
                         buffer.append(line + "\n");
                         Log.d("Response: ", "> " + line);
+                        System.out.println(line);
+                        Gson gson = new Gson();
+                        jsonFinances = gson.fromJson(line, JsonFinances[].class);
+                        setJson(jsonFinances);
                     }
 
                     conn.disconnect();
@@ -96,18 +143,21 @@ String token;
         });
         thread.start();
     }
-}
 
- class MyWebViewClient extends WebViewClient implements MyWebViewClient2 {
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url, Context ctx) {
-        if ("https://dziekanat.wsi.edu.pl/czesne".equals(Uri.parse(url).getHost())) {
-            // This is my website, so do not override; let my WebView load the page
-            return false;
-        }
-        // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        ctx.startActivity(intent);
-        return true;
+    public void setJson(JsonFinances[] jsonFinances){
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                for (int i = 0; i < jsonFinances.length; i++) {
+                    MessageslistOfString.add(
+                            jsonFinances[i].getDate()+"~~"+
+                            jsonFinances[i].getType()+"~~"+
+                            jsonFinances[i].getDetails()+"~~"+
+                            jsonFinances[i].getAmount()+" zł"+"~~");
+                    customAdapterr.notifyDataSetChanged();
+                }
+
+            }
+        });
     }
 }
+
