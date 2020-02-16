@@ -12,10 +12,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 import com.wsiz.wirtualny.R;
 import com.wsiz.wirtualny.ui.CustomAdapter2;
+import com.wsiz.wirtualny.ui.JsonLectures;
+import com.wsiz.wirtualny.ui.JsonNotes;
 import com.wsiz.wirtualny.ui.Pocket.TokenPocket;
 import com.wsiz.wirtualny.ui.Pocket.UserIDPocket;
+import com.wsiz.wirtualny.ui.Translator;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -26,7 +30,7 @@ import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 public class OcenyFragment extends Fragment {
-String token;
+    String token;
     TabLayout tabLayout;
     TabItem sem1;
     TabItem sem2;
@@ -37,6 +41,8 @@ String token;
     TabItem sem7;
     ArrayList<String> MessageslistOfString = new ArrayList<String>();
     CustomAdapter2 customAdapterr;
+    JsonNotes[] jsonNotes;
+    JsonLectures[] jsonLectures;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,21 +65,12 @@ String token;
         online_list.setClickable(false);
 
 
-        MessageslistOfString.add("Elementy architektury komputerów - w. ~~"+" ~~"+" ~~"+"3~~"+" ~~");
-        MessageslistOfString.add("Architektura systemów komputerowych - w. ~~"+"4~~"+" ~~"+" ~~"+" ~~");
-        MessageslistOfString.add("Język angielski 1 (poziom 2) - lektorat ~~"+" ~~"+"5~~"+" ~~"+" ~~");
-        MessageslistOfString.add("Podstawy programowania obiektowego- w. ~~"+"3~~"+"5~~"+" ~~"+" ~~");
-        MessageslistOfString.add("Praktyka zawodowa_3_Ipol - w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
-        MessageslistOfString.add("Praktyka- w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
         customAdapterr.notifyDataSetChanged();
-
-        tabLayout.getTabAt(2).select();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 System.out.println("Selected: " + tab.getPosition());
-                selectedTab(tab.getPosition());
             }
 
             @Override
@@ -123,7 +120,11 @@ String token;
                    while ((line = reader.readLine()) != null) {
                        buffer.append(line + "\n");
                        Log.d("Response: ", "> " + line);
-
+                       System.out.println(line);
+                       Gson gson= new Gson();
+                       jsonNotes = gson.fromJson(line, JsonNotes[].class);
+                       setJson(jsonNotes);
+                       System.out.println("ilosc ocen: " + jsonNotes.length);
                    }
 
                    conn.disconnect();
@@ -135,28 +136,134 @@ String token;
        thread.start();
    }
 
-   public void removeTab(int lastId){
+    public void setJson(JsonNotes[] jsonNotes) {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                int count = 1;
+                long semestrid=0;
+
+                System.out.println("SEMESTR ID: ");
+                for (int i = 0; i < jsonNotes.length; i++) {
+                    if(semestrid==0){
+                        semestrid=jsonNotes[i].getSemestrid();
+                    }
+
+                    if(semestrid!=jsonNotes[i].getSemestrid()){
+                        semestrid=jsonNotes[i].getSemestrid();
+                        count++;
+                    }
+                }
+                System.out.println("Ilosc semestrów: " + count);
+                System.out.println("Ostatni semestr: " + semestrid);
+                removeTab(count,semestrid);
+            }
+        });
+    }
+
+   public void removeTab(int lastId,long lastSemestr){
        for (int i = 0; i < 6; i++) {
            try{
                tabLayout.removeTab(tabLayout.getTabAt(lastId));
-               System.out.println("usunieto: "+i);
            }catch (NullPointerException e){
                e.fillInStackTrace();
            }
 
        }
-
+       tabLayout.getTabAt(lastId-1).select();
+       selectedTab(lastId-1,lastSemestr);
    }
 
-   public void selectedTab(int tab){
+   public void selectedTab(int tab, long semestr){
        System.out.println("Wybrano: " + tab);
-       MessageslistOfString.clear();
-       MessageslistOfString.add("Elementy architektury komputerów - w. ~~"+" ~~"+" ~~"+"3~~"+" ~~");
-       MessageslistOfString.add("Architektura systemów komputerowych - w. ~~"+"4~~"+" ~~"+" ~~"+" ~~");
-       MessageslistOfString.add("Język angielski 1 (poziom 2) - lektorat ~~"+" ~~"+"5~~"+" ~~"+" ~~");
-       MessageslistOfString.add("Podstawy programowania obiektowego- w. ~~"+"3~~"+"5~~"+" ~~"+" ~~");
-       MessageslistOfString.add("Praktyka zawodowa_3_Ipol - w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
-       MessageslistOfString.add("Praktyka- w. ~~"+" ~~"+"3~~"+" ~~"+"5~~");
-       customAdapterr.notifyDataSetChanged();
+       int count = 0;
+       Translator translator = new Translator(0);
+       for (int i = 0; i < jsonNotes.length; i++) {
+           if(jsonNotes[i].getSemestrid()==semestr){
+               translator.setNotesIn(jsonNotes[i].getOcenatypid());
+               System.out.println("Przedmiot: "+jsonNotes[i].getPrzedmiotid()+", ocena: "+ translator.getNotesOut()  +", termin: "+jsonNotes[i].getTerminid());
+               count++;
+           }
+       }
+       System.out.println("ilosc ocen w semestrze: " + count);
+       connectLectures(token,semestr);
    }
+
+
+    public void connectLectures(String token,long semestr){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("https://dziekanat.wsi.edu.pl/get/wd-news/lectures?wdauth=" +token);
+                    HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+
+                    InputStream stream = conn.getInputStream();
+                    BufferedReader reader = null;
+                    reader = new BufferedReader(new InputStreamReader(stream));
+
+                    StringBuffer buffer = new StringBuffer();
+                    String line = "";
+                    System.out.println(conn.getResponseMessage());
+
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
+                        Log.d("Response: ", "> " + line);
+                        System.out.println("LECTURES: ");
+                        System.out.println(line);
+                        Gson gson= new Gson();
+                        jsonLectures = gson.fromJson(line, JsonLectures[].class);
+                        setJsonLectures(jsonLectures,semestr);
+                    }
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
+
+    public void setJsonLectures(JsonLectures[] jsonLectures,long semestr) {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                Translator translator = new Translator(0);
+                for (int i = 0; i < jsonNotes.length; i++) {
+                    for (int j = 0; j < jsonLectures.length; j++) {
+                        if(jsonNotes[i].getPrzedmiotid()==jsonLectures[j].getPrzedmiotid()){
+                            if(jsonNotes[i].getSemestrid()==semestr){
+                                double t0 = 0.0;
+                                double t1 =0.0;
+                                double t2=0.0;
+                                if(jsonNotes[i].getTerminid() == 1 ){
+                                    translator.setNotesIn(jsonNotes[i].getOcenatypid());
+                                    t0=translator.getNotesOut();
+                                }else if(jsonNotes[i].getTerminid() == 2 ){
+                                    translator.setNotesIn(jsonNotes[i].getOcenatypid());
+                                    t1=translator.getNotesOut();
+                                }else  if(jsonNotes[i].getTerminid() == 3){
+                                    translator.setNotesIn(jsonNotes[i].getOcenatypid());
+                                    t2=translator.getNotesOut();
+                                }
+
+                                System.out.println("dodano: "+jsonLectures[j].getNazwa()+"~~"+t0+"~~"+t1+"~~"+t2+"~~"+"0.0");
+                                MessageslistOfString.add(jsonLectures[j].getNazwa()+"~~"+t0+"~~"+t1+"~~"+t2+"~~"+"0.0");
+                                customAdapterr.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+
+
+
+            }
+        });
+
+
+    }
 }

@@ -13,48 +13,48 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Przedmiot"
+        android:text="Podstawy programowania obiektowego- w"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
     <TextView
         android:id="@+id/tf_t1"
-        android:layout_width="10dp"
+        android:layout_width="18dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="3"
-        android:textSize="16dp"
+        android:text="3.5"
+        android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/tf_przedmiot"
         app:layout_constraintEnd_toStartOf="@+id/divider5"
         app:layout_constraintTop_toTopOf="@+id/tf_przedmiot" />
 
     <TextView
         android:id="@+id/tf_t2"
-        android:layout_width="10dp"
+        android:layout_width="18dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="2"
-        android:textSize="16dp"
+        android:text="2.5"
+        android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/divider6"
         app:layout_constraintTop_toTopOf="@+id/tf_t1" />
 
     <TextView
         android:id="@+id/tf_t3"
-        android:layout_width="10dp"
+        android:layout_width="18dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="3"
-        android:textSize="16dp"
+        android:text="3.5"
+        android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/divider9"
         app:layout_constraintTop_toTopOf="@+id/tf_t2" />
 
     <TextView
         android:id="@+id/tf_aktywnosc"
-        android:layout_width="10dp"
+        android:layout_width="18dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="5"
-        android:textSize="16dp"
+        android:textSize="12dp"
         app:layout_constraintEnd_toStartOf="@+id/divider11"
         app:layout_constraintTop_toTopOf="@+id/tf_t3" />
 

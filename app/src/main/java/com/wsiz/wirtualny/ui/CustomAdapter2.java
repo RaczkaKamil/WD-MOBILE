@@ -68,10 +68,31 @@ public class CustomAdapter2 extends ArrayAdapter<String> {
         try{
             String[] split = dataModel.split("~~");
             viewHolder.przedmiot.setText(split[0]);
-            viewHolder.t1.setText(split[1]);
-            viewHolder.t2.setText(split[2]);
-            viewHolder.t3.setText(split[3]);
-            viewHolder.aktywnosc.setText(split[4]);
+            if(!split[1].contains("0.0")){
+                viewHolder.t1.setText(split[1]);
+            }else{
+                viewHolder.t1.setText("");
+            }
+            if(!split[2].contains("0.0")){
+                viewHolder.t2.setText(split[2]);
+            }else{
+                viewHolder.t2.setText("");
+            }
+            if(!split[3].contains("0.0")){
+                viewHolder.t3.setText(split[3]);
+            }else{
+                viewHolder.t3.setText("");
+            }
+            if(!split[4].contains("0.0")){
+                viewHolder.aktywnosc.setText(split[4]);
+            }else{
+                viewHolder.aktywnosc.setText("");
+            }
+
+
+
+
+
         }catch (ArrayIndexOutOfBoundsException e){
             e.fillInStackTrace();
         }
