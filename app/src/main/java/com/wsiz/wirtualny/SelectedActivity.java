@@ -43,6 +43,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -84,7 +86,13 @@ public class SelectedActivity extends AppCompatActivity {
         }
 
         tf_tytul.setText(chosed[0]);
-        tf_data.setText(chosed[1]);
+        Date date;
+        date = new Date();
+        date.setTime(Long.valueOf(chosed[1]));
+        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
+        String dateFormated = format1.format(date);
+
+        tf_data.setText(dateFormated);
         tf_tresc.setText(chosed[2]);
         tf_tresc.setKeyListener(null);
 

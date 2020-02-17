@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">WirtualnyDziekanat</string>
-    <string name="app_name2">WirtualnyDziekanat2</string>
+    <string name="app_name">WD mobile</string>
+    <string name="app_name2">WirtualnyDziekanat</string>
     <string name="title_home">Aktualności</string>
     <string name="title_Oceny">Oceny</string>
     <string name="title_Finanse">Finanse</string>
-    <string name="title_Kalendarz">Kalendarz</string>
+    <string name="title_Plan">Terminarz</string>
 
     <string name="title_activity_selected">SelectedActivity</string>
 
@@ -42,6 +42,10 @@
     <string name="pdf_show_online_dialog_button_no">no</string>
     <string name="pdf_show_online_dialog_button_yes">yes</string>
     <string name="message_please_wait">Proszę czekać...</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

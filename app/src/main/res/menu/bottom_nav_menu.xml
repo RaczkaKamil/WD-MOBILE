@@ -19,7 +19,7 @@
     <item
         android:id="@+id/navigation_kalendarz"
         android:icon="@drawable/ic_event_note_black_24dp"
-        android:title="@string/title_Kalendarz"
+        android:title="@string/title_Plan"
        />
 
 

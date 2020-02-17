@@ -80,8 +80,6 @@ public class LoginActivity extends AppCompatActivity {
     private void setLogin(){
         String data;
         for (int i = 0; i < fileList().length; i++) {
-
-
         if(this.fileList()[i].contains("Account")&&!this.fileList()[i].contains("AccountInfo")){
             try {
                 FileInputStream fileInputStream = null;

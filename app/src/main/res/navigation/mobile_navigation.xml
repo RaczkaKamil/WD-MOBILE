@@ -38,6 +38,6 @@
     <fragment
         android:id="@+id/navigation_kalendarz"
         android:name="com.wsiz.wirtualny.ui.kalendarz.KalendarzFragment"
-        android:label="@string/title_Kalendarz"
-        tools:layout="@layout/fragment_kalendarz" />
+        android:label="@string/title_Plan"
+        tools:layout="@layout/fragment_plan" />
 </navigation>
